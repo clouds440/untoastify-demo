@@ -258,11 +258,11 @@ function App() {
   const [stack, setStack] = useState('list')
   const [queue, setQueue] = useState('wait')
   const [toastStyleEnabled, setToastStyleEnabled] = useState(false)
-  const [toastStyleInput, setToastStyleInput] = useState('{\n  "background": "linear-gradient(135deg, rgba(8, 15, 24, 0.96), rgba(15, 32, 48, 0.94))",\n  "color": "#e6fbff",\n  "border": "1px solid rgba(34, 211, 238, 0.7)",\n  "borderRadius": 18,\n  "padding": "18px 20px",\n  "boxShadow": "0 0 0 1px rgba(45, 212, 191, 0.35), 0 0 24px rgba(34, 211, 238, 0.45), 0 0 50px rgba(168, 85, 247, 0.32)",\n  "fontFamily": "\'Orbitron\', \"Segoe UI\", sans-serif",\n  "letterSpacing": "0.08em",\n  "textTransform": "uppercase",\n  "backdropFilter": "blur(12px)"\n}')
+  const [toastStyleInput, setToastStyleInput] = useState('{\n  "background": "linear-gradient(135deg, rgba(8, 15, 24, 0.96), rgba(15, 32, 48, 0.94))",\n  "color": "#e6fbff",\n  "border": "1px solid rgba(34, 211, 238, 0.7)",\n  "borderRadius": 18,\n  "padding": "18px 20px",\n  "boxShadow": "0 0 0 1px rgba(45, 212, 191, 0.35), 0 0 24px rgba(34, 211, 238, 0.45), 0 0 50px rgba(168, 85, 247, 0.32)",\n  "fontFamily": "Orbitron, Segoe UI, sans-serif",\n  "letterSpacing": "0.08em",\n  "textTransform": "uppercase",\n  "backdropFilter": "blur(12px)"\n}')
   const [iconStyleEnabled, setIconStyleEnabled] = useState(false)
   const [iconStyleInput, setIconStyleInput] = useState('{\n  "fontSize": 20,\n  "color": "#d9fffb",\n  "background": "rgba(45, 212, 191, 0.16)",\n  "borderRadius": 10,\n  "padding": 8,\n  "boxShadow": "0 0 18px rgba(45, 212, 191, 0.7)",\n  "display": "inline-flex",\n  "alignItems": "center",\n  "justifyContent": "center"\n}')
   const [messageStyleEnabled, setMessageStyleEnabled] = useState(false)
-  const [messageStyleInput, setMessageStyleInput] = useState('{\n  "color": "#dcfce7",\n  "fontSize": 15,\n  "fontWeight": 700,\n  "textShadow": "0 0 12px rgba(34, 211, 238, 0.85)",\n  "letterSpacing": "0.08em"\n}')
+  const [messageStyleInput, setMessageStyleInput] = useState('{\n  "color": "#dcfce7",\n  "background": "rgba(14, 116, 144, 0.22)",\n  "fontSize": 15,\n  "fontWeight": 700,\n  "textShadow": "0 0 12px rgba(34, 211, 238, 0.85)",\n  "letterSpacing": "0.08em"\n}')
   const [closeButtonStyleEnabled, setCloseButtonStyleEnabled] = useState(false)
   const [closeButtonStyleInput, setCloseButtonStyleInput] = useState('{\n  "color": "#a5f3fc",\n  "fontSize": 14,\n  "fontWeight": 700,\n  "background": "rgba(8, 145, 178, 0.18)",\n  "borderRadius": 8,\n  "padding": "4px 8px",\n  "textShadow": "0 0 12px rgba(103, 232, 249, 0.9)"\n}')
 
