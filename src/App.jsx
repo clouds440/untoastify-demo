@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { ToastProvider, toast } from 'untoastify'
 import './App.css'
 
@@ -296,19 +296,6 @@ function App() {
   const [onCloseEnabled, setOnCloseEnabled] = useState(false)
   const [showExtraOptions, setShowExtraOptions] = useState(false)
   const [copied, setCopied] = useState(false)
-  const [isBottomPinned, setIsBottomPinned] = useState(false)
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const nearBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 24
-      setIsBottomPinned(nearBottom)
-    }
-
-    handleScroll()
-    window.addEventListener('scroll', handleScroll, { passive: true })
-
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
 
   const tryParseStyle = (rawValue) => {
     if (!rawValue || !rawValue.trim()) {
@@ -570,10 +557,7 @@ function App() {
               </div>
             </div>
 
-            <div className={`cta-row ${isBottomPinned ? 'is-pinned' : ''}`}>
-              <button type="button" className="primary-btn" onClick={triggerToast}>
-                Trigger toast
-              </button>
+            <div className="cta-row">
               <button
                 type="button"
                 className="ghost-btn"
@@ -586,6 +570,10 @@ function App() {
           </section>
 
           <aside className="playground panel">
+            <button type="button" className="primary-btn sticky-trigger-btn" onClick={triggerToast}>
+              Trigger toast
+            </button>
+
             <div className="panel-header">
               <h3>Playground controls</h3>
             </div>
