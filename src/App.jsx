@@ -8,6 +8,8 @@ const sizeOptions = ['sm', 'md', 'lg', 'xl', '2xl']
 const stackOptions = ['list', 'cards', 'overlap']
 const queueOptions = ['wait', 'replace']
 const iconSourceOptions = ['default', 'none', 'element', 'component', 'url', 'object', 'upload']
+const defaultIconUrl = 'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?auto=format&fit=crop&w=96&q=80'
+const maxSnippetIconSourceLength = 180
 
 const demoStyleExample = `{
   "backgroundColor": "#171717",
@@ -144,13 +146,17 @@ const formatCodeValue = (value) => {
   return value
 }
 
-const isPlainImageHint = (sourceValue) => {
+const getPortableIconSource = (sourceValue) => {
   if (!sourceValue) {
-    return false
+    return null
   }
 
   const cleaned = sourceValue.trim()
-  return /^https?:\/\//i.test(cleaned) || /^data:image\//i.test(cleaned)
+  if (!/^https?:\/\//i.test(cleaned) || cleaned.length > maxSnippetIconSourceLength) {
+    return null
+  }
+
+  return cleaned
 }
 
 const makeComponentForMode = (mode) => {
@@ -184,19 +190,19 @@ const getIconValueFromConfig = (config, defaultType = 'info') => {
   }
 
   if (source === 'url') {
-    return config.url || 'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?auto=format&fit=crop&w=96&q=80'
+    return config.url || defaultIconUrl
   }
 
   if (source === 'object') {
     return {
-      src: config.src || 'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?auto=format&fit=crop&w=96&q=80',
+      src: config.src || defaultIconUrl,
       alt: config.alt || `${defaultType} icon`,
     }
   }
 
   if (source === 'upload') {
     return config.uploadDataUrl || {
-      src: 'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?auto=format&fit=crop&w=96&q=80',
+      src: defaultIconUrl,
       alt: `${defaultType} icon`,
     }
   }
@@ -226,21 +232,22 @@ const serializeIconCode = (config = {}, modeLabel = 'toast') => {
   }
 
   if (source === 'url') {
-    return formatCodeValue(config.url || 'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?auto=format&fit=crop&w=96&q=80')
+    const src = getPortableIconSource(config.url || defaultIconUrl)
+    return src ? formatCodeValue(src) : undefined
   }
 
   if (source === 'object') {
+    const src = getPortableIconSource(config.src || defaultIconUrl)
+    if (!src) return undefined
+
     return formatCodeValue({
-      src: config.src || 'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?auto=format&fit=crop&w=96&q=80',
+      src,
       alt: config.alt || `${modeLabel} icon`,
     })
   }
 
   if (source === 'upload') {
-    return formatCodeValue({
-      src: config.uploadDataUrl || 'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?auto=format&fit=crop&w=96&q=80',
-      alt: config.alt || `${modeLabel} icon`,
-    })
+    return undefined
   }
 
   return undefined
@@ -397,15 +404,11 @@ function App() {
       if (providerConfig.iconStyle) lines.push(`  iconStyle={${formatStyleObject(providerConfig.iconStyle)}}`)
       if (providerConfig.messageStyle) lines.push(`  messageStyle={${formatStyleObject(providerConfig.messageStyle)}}`)
       if (providerConfig.closeButtonStyle) lines.push(`  closeButtonStyle={${formatStyleObject(providerConfig.closeButtonStyle)}}`)
-      if (providerConfig.icons) {
-        const iconEntries = Object.entries(providerConfig.icons)
-          .map(([type, value]) => {
-            if (value === undefined) return null
-            if (value === null) return `    ${type}: null`
-            if (typeof value === 'function') return `    ${type}: ${value.name || 'DemoIcon'}`
-            if (value && typeof value === 'object' && 'src' in value) return `    ${type}: ${JSON.stringify(value, null, 2).replace(/\n/g, '\n    ')}`
-            if (typeof value === 'string') return `    ${type}: ${JSON.stringify(value)}`
-            return null
+      if (providerIconsEnabled) {
+        const iconEntries = Object.entries(providerIcons)
+          .map(([type, config]) => {
+            const iconCode = serializeIconCode(config, type)
+            return iconCode === undefined ? null : `    ${type}: ${iconCode.replace(/\n/g, '\n    ')}`
           })
           .filter(Boolean)
 
@@ -422,7 +425,10 @@ function App() {
     configLines.push(`position: "${payload.position}"`)
     configLines.push(`duration: ${payload.duration}`)
     configLines.push(`size: "${payload.size}"`)
-    if (toastIconEnabled && payload.icon !== undefined) configLines.push(`icon: ${serializeIconCode(toastIcon, toastType) ?? 'null'}`)
+    if (toastIconEnabled && payload.icon !== undefined) {
+      const iconCode = serializeIconCode(toastIcon, toastType)
+      if (iconCode !== undefined) configLines.push(`icon: ${iconCode}`)
+    }
     if (toastStyleEnabled && payload.style) configLines.push(`style: ${formatStyleObject(payload.style)}`)
     if (iconStyleEnabled && payload.iconStyle) configLines.push(`iconStyle: ${formatStyleObject(payload.iconStyle)}`)
     if (messageStyleEnabled && payload.messageStyle) configLines.push(`messageStyle: ${formatStyleObject(payload.messageStyle)}`)
